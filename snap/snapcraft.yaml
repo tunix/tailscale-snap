@@ -1,15 +1,48 @@
-name: my-snap-name # you probably want to 'snapcraft register <name>'
-version: '0.1' # just for humans, typically '1.2+git' or '1.3.2'
-summary: Single-line elevator pitch for your amazing snap # 79 char long summary
-description: |
-  This is my-snap's description. You have a paragraph or two to tell the
-  most important story about your snap. Keep it under 100 words though,
-  we live in tweetspace and your description wants to look good in the snap
-  store.
+name: tailscale
+version: "1.10.2"
+license: BSD-3-Clause
+summary: The easiest, most secure way to use WireGuard and 2FA.
+description: >
+  Zero config VPN. Installs on any device in minutes, manages firewall rules for you, and works from anywhere.
+icon: tailscale.png
 
-confinement: devmode # use 'strict' once you have the right plugs and slots
+base: core20
+grade: devel
+confinement: devmode
+compression: lzo
+
+layout:
+  /var/lib/tailscale:
+    bind: $SNAP_DATA/var/lib/tailscale
+
+apps:
+  tailscale:
+    command: usr/bin/tailscale
+
+  tailscaled:
+    command: usr/sbin/tailscaled
+
+  service:
+    command: usr/sbin/tailscale_snap_daemon
+    daemon: simple
+    post-stop-command: usr/sbin/tailscaled --cleanup
+    restart-condition: on-failure
 
 parts:
-  my-part:
-    # See 'snapcraft plugins'
-    plugin: nil
+  tailscale:
+    plugin: dump
+    source: https://pkgs.tailscale.com/stable/tailscale_${SNAPCRAFT_PROJECT_VERSION}_${SNAPCRAFT_TARGET_ARCH}.tgz
+    filesets:
+      no-systemd:
+        - -systemd
+    organize:
+      tailscale: usr/bin/
+      tailscaled: usr/sbin/
+    stage:
+      - $no-systemd
+
+  scripts:
+    plugin: dump
+    source: snap/local
+    organize:
+      tailscale_snap_daemon: usr/sbin/

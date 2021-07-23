@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+PORT=$(snapctl get PORT)
+FLAGS="$(snapctl get FLAGS)"
+
+if [[ -z $PORT ]]; then
+    snapctl set PORT=41641
+fi
+
+if [[ -z "$FLAGS" ]]; then
+    snapctl set FLAGS=""
+fi

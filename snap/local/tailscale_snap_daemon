@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+$SNAP/usr/sbin/tailscaled --cleanup
+
+$SNAP/usr/sbin/tailscaled \
+    --state=$SNAP_DATA/tailscaled.state \
+    --socket=/run/snap.tailscale/tailscaled.sock \
+    --port $(snapctl get PORT) \
+    $(snapctl get FLAGS)
