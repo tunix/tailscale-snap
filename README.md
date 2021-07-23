@@ -1,7 +1,7 @@
 <h1 align="center">
   <img src="tailscale.png" alt="tailscale">
   <br />
-  [Project]
+  tailscale
 </h1>
 
 <p align="center"><b>This is the snap for tailscale</b>, <i>“The easiest, most secure way to use WireGuard and 2FA.”</i>.
@@ -38,7 +38,7 @@ It works on Ubuntu, Fedora, Debian, and other major Linux distributions.</p>
   - [x] Give the newly created repository a sensible name, like `godzilla-snap` if you're snapping the Godzilla software
   - [x] Update the description of the repository
   - [x] Update logos and references to `[Project]` and `[my-snap-name]`
-  - [ ] Create a snap that runs in `devmode`
+  - [x] Create a snap that runs in `devmode`
   - [ ] Register the snap in the store, **using the preferred upstream name**
   - [ ] Add a screenshot to this `README.md`
   - [ ] Publish the `devmode` snap in the Snap store edge channel
