@@ -17,10 +17,7 @@ layout:
 
 apps:
   tailscale:
-    command: usr/bin/tailscale
-
-  tailscaled:
-    command: usr/sbin/tailscaled
+    command: usr/bin/tailscale --socket /run/snap.tailscale/tailscaled.sock
 
   service:
     command: usr/sbin/tailscale_snap_daemon
