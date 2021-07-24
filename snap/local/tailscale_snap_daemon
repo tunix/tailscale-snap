@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
+CONFIGURED_PORT=$(snapctl get port)
+CONFIGURED_FLAGS=$(snapctl get flags)
+
 $SNAP/usr/sbin/tailscaled --cleanup
 
 $SNAP/usr/sbin/tailscaled \
     --state=$SNAP_DATA/tailscaled.state \
     --socket=/run/snap.tailscale/tailscaled.sock \
-    --port $(snapctl get PORT) \
-    $(snapctl get FLAGS)
+    --port ${CONFIGURED_PORT:-41641} \
+    $CONFIGURED_FLAGS

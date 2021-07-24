@@ -1,12 +1,37 @@
 #!/usr/bin/env bash
 
-PORT=$(snapctl get PORT)
-FLAGS="$(snapctl get FLAGS)"
+DEFAULT_PORT=41641
+DEFAULT_FLAGS=""
+
+PORT=$(snapctl get port)
+FLAGS="$(snapctl get flags)"
+
+refresh_needed=false
 
 if [[ -z $PORT ]]; then
-    snapctl set PORT=41641
+    echo "Setting default port..."
+
+    snapctl set port=$DEFAULT_PORT
+elif [[ $PORT != $DEFAULT_PORT ]]; then
+    echo "Setting configured port..."
+
+    snapctl set port=$PORT
+    refresh_needed=true
 fi
 
 if [[ -z "$FLAGS" ]]; then
-    snapctl set FLAGS=""
+    echo "Setting default flags..."
+
+    snapctl set flags=$DEFAULT_FLAGS
+elif [[ "$FLAGS" != "$DEFAULT_FLAGS" ]]; then
+    echo "Setting configured flags..."
+
+    snapctl set flags=$FLAGS
+    refresh_needed=true
+fi
+
+if ( $refresh_needed ); then
+    echo "Configuration has changed. Restarting..."
+
+    snapctl restart tailscale
 fi
