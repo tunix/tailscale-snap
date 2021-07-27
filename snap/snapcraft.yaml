@@ -8,12 +8,33 @@ icon: tailscale.png
 
 base: core20
 grade: devel
-confinement: devmode
+confinement: strict
 compression: lzo
+
+architectures:
+  - build-on: i386
+  - build-on: amd64
+  - build-on: arm64
+  # TODO: other archs
 
 layout:
   /var/lib/tailscale:
     bind: $SNAP_DATA/var/lib/tailscale
+
+plugs:
+  hostfs-etc-os-release:
+    interface: system-files
+    read:
+      - /etc/os-release
+      - /etc/pop-os/os-release
+  hostfs-etc-resolv-conf-and-backup:
+    interface: system-files
+    read:
+      - /etc/resolv.conf
+      - /etc/resolv.pre-tailscale-backup.conf
+    write:
+      - /etc/resolv.conf
+      - /etc/resolv.pre-tailscale-backup.conf
 
 apps:
   tailscale:
@@ -24,10 +45,19 @@ apps:
     daemon: simple
     post-stop-command: usr/sbin/tailscaled --cleanup
     restart-condition: on-failure
+    plugs:
+      - firewall-control
+      - network
+      - network-bind
+      - network-control
+      - network-manager
+      - system-backup
+      - system-observe
 
 parts:
   tailscale:
     plugin: dump
+    # FIXME: SNAPCRAFT_TARGET_ARCH doesn't exactly match with tailscale's arch strings
     source: https://pkgs.tailscale.com/stable/tailscale_${SNAPCRAFT_PROJECT_VERSION}_${SNAPCRAFT_TARGET_ARCH}.tgz
     filesets:
       no-systemd:
@@ -37,6 +67,10 @@ parts:
       tailscaled: usr/sbin/
     stage:
       - $no-systemd
+    stage-packages:
+      - iproute2
+      - libatm1
+      - systemctl
 
   scripts:
     plugin: dump
