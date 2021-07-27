@@ -22,12 +22,19 @@ layout:
     bind: $SNAP_DATA/var/lib/tailscale
 
 plugs:
-  hostfs-etc-resolv-conf:
+  hostfs-etc-os-release:
+    interface: system-files
+    read:
+      - /etc/os-release
+      - /etc/pop-os/os-release
+  hostfs-etc-resolv-conf-and-backup:
     interface: system-files
     read:
       - /etc/resolv.conf
+      - /etc/resolv.pre-tailscale-backup.conf
     write:
       - /etc/resolv.conf
+      - /etc/resolv.pre-tailscale-backup.conf
 
 apps:
   tailscale:
@@ -43,6 +50,7 @@ apps:
       - network
       - network-bind
       - network-control
+      - network-manager
       - system-backup
       - system-observe
 
